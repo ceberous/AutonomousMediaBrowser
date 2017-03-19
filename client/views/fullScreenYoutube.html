@@ -1,0 +1,68 @@
+<h1>Loading Full Screen Youtube</h1>
+<script type="text/javascript">
+
+	var wPlayer , wIFrame;
+
+	var searchKeyword = function(wParam) {
+
+		var wResults = [];
+
+		var request = gapi.client.youtube.search.list({
+			q: wParam,
+			part: 'snippet'
+		});
+
+		request.execute(function(response) {
+			
+			for ( var i = 0; i < response.result.items.length; ++i ) {
+				var item = {};
+				item.title = response.result.items[i].snippet.title;
+				item.description = response.result.items[i].snippet.description;
+				item.id = response.result.items[i].id.videoId;
+				wResults.push(item);
+			}
+
+			showVideo(wResults[0]);
+
+		});
+	};
+
+	var getChannelLatest = function() {
+		console.log("blah");
+	};
+
+	var showVideo = function(wVideo) {
+
+		wPlayer = new YT.Player( 'player', {
+		    height: '200',
+		    width: '300',
+		    videoId: wVideo.id,
+		    events: {
+		      'onReady': onPlayerReady
+		    }
+		});
+
+	};
+
+	function onPlayerReady(event) {
+		
+		$('button').click( function() {
+			playFullscreen();
+		});
+	}
+
+	function playFullscreen() {
+		wPlayer.playVideo();
+		wPlayer.requestFullScreen();
+  		
+	}
+
+	searchKeyword("walrus");
+
+</script>
+
+<div id="player">
+	
+</div>
+
+<button>play fullscreen</button>
